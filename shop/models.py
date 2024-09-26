@@ -23,7 +23,7 @@ class Product(models.Model):
     price = models.FloatField()
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='categorie')
     image = models.CharField(max_length=5000)
-    date_added = models.DateTimeField(auto_now_add=True)
+    date_added = models.DateTimeField(auto_now=True)
     
     
     class Meta:

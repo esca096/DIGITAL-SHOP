@@ -2,6 +2,7 @@
 
 {% block content %}
 
+     <!-- ce code gerer la partie l'affichage de la barre de recherche-->
     <div class="container">
         <div class="row">
             <div class="col-md-12">
@@ -17,5 +18,50 @@
                 </form>
             </div>
         </div>
+    </div><br>
+
+     <!-- ce code gerer la partie l'affichage des produits au client -->
+    <div class="container">
+        <div class="row">
+            {% for product in product_object %}
+            <div class="col-md-3">
+                <div class="card" style="width: 11rem;">
+                    <img src="{{ product.image }}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <div class="card-title"> {{ product.title }}</div>
+                        <div class="card-text"> {{ product.price }}</div>
+                        <button class="btn btn-success">View</button>
+                        <button class="btn btn-primary">Add</button>
+                    </div>
+                  </div>
+            </div>
+            {% endfor %}
+        </div>
     </div>
+
+    <!-- ce code gerer la partie de la pargination-->
+    <center>
+        <div class="row mt-5">
+            <div class="col-md-3 offset-md-5">
+                <ul class="pagination">
+                    {% if product_object.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page= {{ product_object.previous_page_number }}">Previous</a>
+                        </li>
+                    {% endif %}
+    
+                        <li class="page-item active">
+                            <a class="page-link" href="?page={{ product_object.number}}">{{ product_object.number}}</a>
+                        </li>
+    
+                    {% if product_object.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ product_object.next_page_number }}">Next</a>
+                    </li>
+                    {% endif %}
+    
+                </ul>
+            </div>
+        </div>
+    </center>
 {% endblock content %}
