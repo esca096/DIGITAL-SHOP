@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <br><br>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div>
+                    <img src="{{ product.image }}" width="500px" height="500px" alt="">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="text-primary display-3">
+                    {{ product.title }}
+                </div>
+                <div class="text-danger">
+                    Price: ${{ product.price }}
+                </div>
+                <div>
+                    {{ product.description }}
+                </div>
+                <a href=""><button class="btn btn-success">Achetter</button></a>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
