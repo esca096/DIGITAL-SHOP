@@ -28,8 +28,8 @@
                 <div class="card" style="width: 11rem;">
                     <img src="{{ product.image }}" class="card-img-top" alt="...">
                     <div class="card-body">
-                        <div class="card-title"> {{ product.title }}</div>
-                        <div class="card-text"> {{ product.price }}</div>
+                        <div id="aa{{ product.id }}" class="card-title"> {{ product.title }} </div>
+                        <div class="card-text"> {{ product.price }} </div>
                         <a href="{{ product.id }}" class="btn btn-success">View</a>
                         <button id="{{ product.id}}" class="btn btn-primary add">Add</button>
                     </div>
@@ -69,24 +69,116 @@
 {% block js %}
 
     <script type="text/javascript">
+        // Vérifier si le panier existe déjà dans le localStorage
         if (localStorage.getItem('panier') == null){
             var panier = {};
-        }else{
+        } else {
             panier = JSON.parse(localStorage.getItem('panier'));
         }
+
+        // Mise à jour initiale du popover
+        AfficheList(panier);
+
+        // Fonction pour ajouter un produit au panier
         $(document).on('click', '.add', function(){
             console.log('Add');
-            var item_id = this.id.toString();
+            var item_id = this.id.toString();  // ID de l'article ajouté
             console.log(item_id);
+            
+            // Si l'article existe déjà dans le panier, augmenter la quantité, sinon initialiser à 1
             if (panier[item_id] != undefined){
-                panier[item_id] = panier[item_id] +1;
-            }else{
+                panier[item_id] = panier[item_id] + 1;
+            } else {
                 panier[item_id] = 1;
             }
             console.log(panier);
+            
+            // Sauvegarder le panier dans le localStorage
             localStorage.setItem('panier', JSON.stringify(panier));
-            document.getElementById("panier").innerHTML ="Panier("+ Object.keys(panier).length +")";
-        })
+            
+            // Mettre à jour l'affichage du compteur du panier
+            document.getElementById("panier").innerHTML = "Panier(" + Object.keys(panier).length + ")";
+            
+            // Mettre à jour le contenu du popover
+            AfficheList(panier);
+        });
+
+        // Fonction pour générer et afficher le contenu du popover
+        function AfficheList(panier){
+            var panierString = "";  // Chaîne pour stocker le contenu HTML du panier
+            panierString += "<h5>Voici votre liste</h5>";
+            var index = 1;
+            
+            // Boucler sur les articles du panier et les ajouter à la chaîne HTML
+            for (var x in panier){
+                panierString += "<div>" + index + ". " + document.getElementById("aa" + x).innerHTML + " - Qte: " + panier[x] + "</div>";
+                index += 1;
+            }
+            // Ajout d'un bouton pour valider le panier
+            panierString += "<a href='/checkout' class='btn btn-primary'>Checkout</a>";
+            // Vérifier si Bootstrap est disponible et mettre à jour le popover
+            if (typeof bootstrap !== 'undefined') {
+                const panierElement = document.getElementById("panier");
+
+                // Détruire l'ancien popover s'il existe
+                const existingPopover = bootstrap.Popover.getInstance(panierElement);
+                if (existingPopover) {
+                    existingPopover.dispose();
+                }
+
+                // Modifier le contenu du popover
+                panierElement.setAttribute('data-bs-content', panierString);
+
+                // Réinitialiser le popover avec le nouveau contenu
+                const popover = new bootstrap.Popover(panierElement, {
+                    html: true
+                });
+            } else {
+                console.error('Bootstrap non chargé correctement.');
+            }
+        }
     </script>
 
 {% endblock js %}
+
+
+
+
+
+{% comment %} c'est le meme le code text/javascript que celui d'en haut mais en plus court {% endcomment %}
+<script type="text/javascript">
+    // Initialiser le panier
+    let panier = localStorage.getItem('panier') ? JSON.parse(localStorage.getItem('panier')) : {};
+
+    // Événement pour ajouter un produit au panier
+    $(document).on('click', '.add', function() {
+        console.log('Add');
+        let item_id = this.id.toString();
+        console.log(item_id);
+
+        // Mettre à jour la quantité du produit dans le panier
+        panier[item_id] = panier[item_id] ? panier[item_id] + 1 : 1;
+        console.log(panier);
+
+        // Sauvegarder le panier dans localStorage
+        localStorage.setItem('panier', JSON.stringify(panier));
+
+        // Mettre à jour l'affichage du panier
+        document.getElementById("panier").innerHTML = "Panier(" + Object.keys(panier).length + ")";
+    });
+
+     
+
+    // Récupérer la liste des éléments qui déclenchent les popovers
+    const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]');
+
+    // Créer une nouvelle liste de popovers avec le nouveau message
+    const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl));
+
+    // Récupérer l'élément HTML
+    const panierElement = document.getElementById('panier');
+
+    // Mettre à jour l'attribut data-bs-content
+    panierElement.setAttribute('data-bs-content', '<h5>Nouveau message personnalisé</h5>');
+</script>
+
