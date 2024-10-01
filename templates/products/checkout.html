@@ -5,30 +5,97 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <ol class="list-group list-group-numbered">
-                    <li class="list-group-item d-flex justify-content-between align-items-start">
-                      <div class="ms-2 me-auto">
-                        <div class="fw-bold">Subheading</div>
-                        Content for list item
-                      </div>
-                      <span class="badge text-bg-primary rounded-pill">14</span>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-start">
-                      <div class="ms-2 me-auto">
-                        <div class="fw-bold">Subheading</div>
-                        Content for list item
-                      </div>
-                      <span class="badge text-bg-primary rounded-pill">14</span>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-start">
-                      <div class="ms-2 me-auto">
-                        <div class="fw-bold">Subheading</div>
-                        Content for list item
-                      </div>
-                      <span class="badge text-bg-primary rounded-pill">14</span>
-                    </li>
-                  </ol>
+                <ol class="list-group list-group-numbered" id="item-list">
+                  <h1 class="fw-bold text-center" style="color: grey;">Voici la liste de vos produits</h1>
+                </ol>
             </div>
-        </div>
+        </div><br>
+
+        <form method="post" class="row g-3 needs-validation" novalidate>
+          {% csrf_token %}
+          <div class="col-md-6">
+            <label for="validationCustom01" class="form-label">Name</label>
+            <input type="text" class="form-control" id="nom" name="nom"  required placeholder="Sahel Demenagement">
+            <div class="valid-feedback">
+              Looks good!
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label for="validationCustomEmail" class="form-label">Email</label>
+            <div class="input-group has-validation">
+              <span class="input-group-text" id="inputGroupPrepend">@</span>
+              <input type="email" class="form-control" id="email" name="email" placeholder="sahel@gmail.com" aria-describedby="inputGroupPrepend" required>
+              <div class="invalid-feedback">
+                Please choose a Email.
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label for="validationCustom03" class="form-label">City</label>
+            <input type="text" class="form-control" id="ville" placeholder="Niamey" name="ville" required>
+            <div class="invalid-feedback">
+              Please provide a valid city.
+            </div>
+          </div>
+          <div class="col-md-3">
+            <label for="validationCustom04" class="form-label">State</label>
+            <select class="form-select" id="pays" name="pays" required>
+              <option selected disabled value="">Niger</option>
+              <option>TOGO</option>
+              <option>MAROC</option>
+              <option>TOGO</option>
+            </select>
+            <div class="invalid-feedback">
+              Please select a valid state.
+            </div>
+          </div>
+          <div class="col-md-3">
+            <label for="validationCustom05" class="form-label">Zip</label>
+            <input name="zipcode" type="text" class="form-control" placeholder="02145" id="zipcode" required>
+            <div class="invalid-feedback">
+              Please provide a valid zip.
+            </div>
+          </div>
+          <div class="col-md-12">
+            <label for="validationCustom05" class="form-label">Address</label>
+            <input name="address" type="text" class="form-control" id="address" placeholder="rue BARE MAINASARA" required>
+            <div class="invalid-feedback">
+              Please provide a valid Address.
+            </div>
+          </div>
+          <div class="col-12">
+            <button class="btn btn-primary" type="submit">Commander</button>
+          </div>
+        </form>
     </div>
+
+    
 {% endblock content %}
+
+{% block js %}
+
+    <script type="text/javascript">
+
+      if(localStorage.getItem('panier')==null){
+        var panier = {};
+      }else{
+        panier = JSON.parse(localStorage.getItem('panier'));
+      }
+      for(item in panier){
+        let nom = panier[item][1];
+        let quantite = panier[item][0];
+        let itemString = `<li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                              <div class="fw-bold">${nom}</div>
+                            </div>
+                            <span class="badge text-bg-primary rounded-pill">QTE :${quantite}</span>
+                          </li>`;
+                          $('#item-list').append(itemString);
+      }
+      
+
+    </script>
+
+{% endblock js %}
+
+

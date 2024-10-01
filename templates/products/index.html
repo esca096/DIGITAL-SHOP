@@ -87,9 +87,12 @@
             
             // Si l'article existe déjà dans le panier, augmenter la quantité, sinon initialiser à 1
             if (panier[item_id] != undefined){
-                panier[item_id] = panier[item_id] + 1;
+                quantite = panier[item_id][0] + 1;
+                panier[item_id][0] = quantite;
             } else {
-                panier[item_id] = 1;
+                quantite = 1;
+                name = document.getElementById("aa" + item_id).innerHTML;
+                panier[item_id] = [quantite, name];
             }
             console.log(panier);
             
@@ -111,7 +114,7 @@
             
             // Boucler sur les articles du panier et les ajouter à la chaîne HTML
             for (var x in panier){
-                panierString += "<div>" + index + ". " + document.getElementById("aa" + x).innerHTML + " - Qte: " + panier[x] + "</div>";
+                panierString += "<div>" + index + ". " + document.getElementById("aa" + x).innerHTML + " - Qte: " + panier[x][0] + "</div>";
                 index += 1;
             }
             // Ajout d'un bouton pour valider le panier
@@ -145,7 +148,7 @@
 
 
 
-{% comment %} c'est le meme le code text/javascript que celui d'en haut mais en plus court {% endcomment %}
+{% comment %} c'est le meme le code text/javascript que celui d'en haut mais en plus court 
 <script type="text/javascript">
     // Initialiser le panier
     let panier = localStorage.getItem('panier') ? JSON.parse(localStorage.getItem('panier')) : {};
@@ -182,3 +185,4 @@
     panierElement.setAttribute('data-bs-content', '<h5>Nouveau message personnalisé</h5>');
 </script>
 
+{% endcomment %}
