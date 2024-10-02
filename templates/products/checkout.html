@@ -11,8 +11,11 @@
             </div>
         </div><br>
 
-        <form method="post" class="row g-3 needs-validation" novalidate>
+
+        <center><h2 style="color: blue;"> Remplir ce formilaire pour lancer la commande </h2></center>
+        <form id="checkout-form" method="post" class="row g-3 needs-validation" novalidate>
           {% csrf_token %}
+          <input type="hidden" name="items" id="items">
           <div class="col-md-6">
             <label for="validationCustom01" class="form-label">Name</label>
             <input type="text" class="form-control" id="nom" name="nom"  required placeholder="Sahel Demenagement">
@@ -32,7 +35,7 @@
           </div>
           <div class="col-md-6">
             <label for="validationCustom03" class="form-label">City</label>
-            <input type="text" class="form-control" id="ville" placeholder="Niamey" name="ville" required>
+            <input type="text" class="form-control" id="ville"  name="ville" required>
             <div class="invalid-feedback">
               Please provide a valid city.
             </div>
@@ -40,10 +43,21 @@
           <div class="col-md-3">
             <label for="validationCustom04" class="form-label">State</label>
             <select class="form-select" id="pays" name="pays" required>
-              <option selected disabled value="">Niger</option>
+              <option selected disabled value="">AUSTRALIE</option>
               <option>TOGO</option>
+              <option>NIGER</option>
               <option>MAROC</option>
-              <option>TOGO</option>
+              <option>GHANA</option>
+              <option>COTE D'IVOIRE</option>
+              <option>BENIN</option>
+              <option>MALI</option>
+              <option>BURKINA FASO</option>
+              <option>TCHAD</option>
+              <option>CAMEROON</option>
+              <option>CONGO</option>
+              <option>SUISSE</option>
+              <option>JAPON</option>
+              <option>BRASIL</option>
             </select>
             <div class="invalid-feedback">
               Please select a valid state.
@@ -64,7 +78,7 @@
             </div>
           </div>
           <div class="col-12">
-            <button class="btn btn-primary" type="submit">Commander</button>
+            <button class="btn btn-primary offset-md-1 mt-3" type="submit">Commander</button>
           </div>
         </form>
     </div>
@@ -81,21 +95,41 @@
       }else{
         panier = JSON.parse(localStorage.getItem('panier'));
       }
+      var total = 0;
+      var nombre = 0;
       for(item in panier){
         let nom = panier[item][1];
         let quantite = panier[item][0];
+        let prix = panier[item][2];
+        nombre += quantite;
+        total += prix;
+
         let itemString = `<li class="list-group-item d-flex justify-content-between align-items-start">
                             <div class="ms-2 me-auto">
                               <div class="fw-bold">${nom}</div>
                             </div>
-                            <span class="badge text-bg-primary rounded-pill">QTE :${quantite}</span>
+                            <span class="badge text-bg-primary rounded-pill ms-auto">QTE :${quantite}</span>
+                            <span class="badge text-bg-secondary rounded-pill ms-auto">$ ${prix}</span>
                           </li>`;
                           $('#item-list').append(itemString);
       }
-      
+      $('#items').val(JSON.stringify(panier));
 
+      let itemNombre= `<li class="list-group-item d-flex justify-content-between align-items-start">
+        <b class="fw-bold" style="color: darkred;">PRIX ET QUANTITES TOTALS</b>
+        <span class="badge text-bg-warning rounded-pill ms-auto">QTE :${nombre}</span>
+        <span class="badge text-bg-danger rounded-pill ms-auto">$ ${total}</span>
+      </li>`;
+      $('#item-list').append(itemNombre);
+
+      // Capturer l'événement de soumission du formulaire
+      document.getElementById('checkout-form').addEventListener('submit', function(){
+        // Effacer le panier du localStorage
+        localStorage.removeItem('panier');
+      })
     </script>
 
 {% endblock js %}
 
 
+<li></li>

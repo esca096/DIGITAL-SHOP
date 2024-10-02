@@ -29,7 +29,7 @@
                     <img src="{{ product.image }}" class="card-img-top" alt="...">
                     <div class="card-body">
                         <div id="aa{{ product.id }}" class="card-title"> {{ product.title }} </div>
-                        <div class="card-text"> {{ product.price }} </div>
+                        <div id="price{{ product.id }}" class="card-text" style="color: darkred;"> {{ product.price }} </div>
                         <a href="{{ product.id }}" class="btn btn-success">View</a>
                         <button id="{{ product.id}}" class="btn btn-primary add">Add</button>
                     </div>
@@ -89,10 +89,12 @@
             if (panier[item_id] != undefined){
                 quantite = panier[item_id][0] + 1;
                 panier[item_id][0] = quantite;
+                panier[item_id][2] += parseFloat(document.getElementById("price"+item_id).innerHTML);
             } else {
                 quantite = 1;
+                prix = parseFloat(document.getElementById("price"+item_id).innerHTML);
                 name = document.getElementById("aa" + item_id).innerHTML;
-                panier[item_id] = [quantite, name];
+                panier[item_id] = [quantite, name, prix];
             }
             console.log(panier);
             
@@ -106,32 +108,41 @@
             AfficheList(panier);
         });
 
-        // Fonction pour générer et afficher le contenu du popover
-        function AfficheList(panier){
+        function AfficheList(panier) {
             var panierString = "";  // Chaîne pour stocker le contenu HTML du panier
             panierString += "<h5>Voici votre liste</h5>";
             var index = 1;
-            
+        
             // Boucler sur les articles du panier et les ajouter à la chaîne HTML
-            for (var x in panier){
-                panierString += "<div>" + index + ". " + document.getElementById("aa" + x).innerHTML + " - Qte: " + panier[x][0] + "</div>";
+            for (var x in panier) {
+                var productElement = document.getElementById("aa" + x);  // Récupérer l'élément du produit
+        
+                if (productElement) {  // Vérifier si l'élément existe avant d'accéder à ses propriétés
+                    panierString += "<div>" + index + ". " + productElement.innerHTML + " - Qte: " + panier[x][0] + "</div>";
+                } else {
+                    // Si le produit n'est pas trouvé sur la page actuelle (ex. pagination), utiliser le nom stocké dans le panier
+                    panierString += "<div>" + index + ". " + panier[x][1] + " - Qte: " + panier[x][0] + "</div>";
+                }
+        
                 index += 1;
             }
+        
             // Ajout d'un bouton pour valider le panier
             panierString += "<a href='/checkout' class='btn btn-primary'>Checkout</a>";
+        
             // Vérifier si Bootstrap est disponible et mettre à jour le popover
             if (typeof bootstrap !== 'undefined') {
                 const panierElement = document.getElementById("panier");
-
+        
                 // Détruire l'ancien popover s'il existe
                 const existingPopover = bootstrap.Popover.getInstance(panierElement);
                 if (existingPopover) {
                     existingPopover.dispose();
                 }
-
+        
                 // Modifier le contenu du popover
                 panierElement.setAttribute('data-bs-content', panierString);
-
+        
                 // Réinitialiser le popover avec le nouveau contenu
                 const popover = new bootstrap.Popover(panierElement, {
                     html: true
@@ -140,6 +151,7 @@
                 console.error('Bootstrap non chargé correctement.');
             }
         }
+        
     </script>
 
 {% endblock js %}
@@ -186,3 +198,4 @@
 </script>
 
 {% endcomment %}
+
