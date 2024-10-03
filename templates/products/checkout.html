@@ -77,8 +77,12 @@
               Please provide a valid Address.
             </div>
           </div>
+          <div class="col-md-3">
+            <label for="validationCustom05" class="form-label">TOTAL</label>
+            <input name="total" type="readonly" class="bg-dark text-warning form-control" id="total">
+          </div>
           <div class="col-12">
-            <button class="btn btn-primary offset-md-1 mt-3" type="submit">Commander</button>
+            <button class="btn btn-primary offset-md-1 mt-2" type="submit">Commander</button>
           </div>
         </form>
     </div>
@@ -121,6 +125,8 @@
         <span class="badge text-bg-danger rounded-pill ms-auto">$ ${total}</span>
       </li>`;
       $('#item-list').append(itemNombre);
+
+      $('#total').val("$"+total);
 
       // Capturer l'événement de soumission du formulaire
       document.getElementById('checkout-form').addEventListener('submit', function(){
